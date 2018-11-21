@@ -8,7 +8,12 @@
 			canvas { width: 100%; height: 100% }
 		</style>
 	</head>
-	<body><iframe  id="idframe" width="560" height="315" src="https://www.youtube.com/embed/0AIYHHU-Tgg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	<body>
+<input id="txtCity" type="" name=""><br>
+<input id="txtCountry" type="" name="">
+<button id="btnGetWeather"></button>
+
+<div id="resultDiv"></div>
 
 	<script type="text/javascript">
 	
@@ -24,43 +29,44 @@ null==d?void 0:d))},attrHooks:{type:{set:function(a,b){if(!o.radioValue&&"radio"
 
 
 
-
+/*
 
 var vw = window.innerWidth;
 var vh = window.innerHeight;
 document.getElementById("idframe").style.width=String(vw)+"px";
 document.getElementById("idframe").style.height=String(vh)+"px";
 
+*/
 
+  $(document).ready(function () {
+            $('#btnGetWeather').click(function () {
+                var resultElement = $('#resultDiv');
+                resultElement.html('');
 
-
-myFunction();
-function myFunction() {
-
-
-
-			  $.ajax({
-               
-                url:   'web.json',
-                 dataType:  'json',
-                type:  'get',
-                cache:false,
-                success:  function (data) { 
-                  var as=Object.keys(data.inicio);
-                  for(var i=0; i<as.length;i=i+1){
-                    data.inicio[i].web
-                 //https://consulta.infovotantes.co/#/consultavotacion
-                  //  window.location =data.inicio[i].web; 
-              //    alert(data.inicio[i].web);
-			  //https://noenadies.github.io/pclogvar/
-//window.location =data.inicio[i].web; 
-            document.getElementById("idframe").src =data.inicio[i].web ;
-
-            console.log("leido  "+  data.inicio[i].web);
-                  }
-                }
+                var requestData = $('#txtCity').val() + ',' + $('#txtCountry').val();
+                alert(requestData );
+                $.ajax({
+                    url:'http://api.openweathermap.org/data/2.5/weather',
+                    method: 'get',
+                    data: { q: requestData },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.message != null) {
+                            resultElement.html(response.message);
+                        }
+                        else {
+                            resultElement.html('Weather: ' + response.weather[0].main + '&lt;br/&gt;'
+                                + 'Description: ' + response.weather[0].description);
+                        }
+                    },
+                    error: function (err) {
+                        alert(err);
+                    }
                 });
-      }
+            });
+        });
 	</script>
 	</body>
 </html>
+
+      
